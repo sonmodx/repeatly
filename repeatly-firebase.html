@@ -1,0 +1,1895 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7fb" />
+    <title>Repeatly — Purchase Rhythm Tracker</title>
+    <link rel="manifest" href="./manifest.json" />
+
+    <meta name="theme-color" content="#6c5ce7" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <meta name="apple-mobile-web-app-title" content="Repeatly" />
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <link rel="apple-touch-icon" href="./assets/icons/icon-192.png" />
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --surface: #fff;
+        --ink: #172033;
+        --muted: #7b8497;
+        --line: #e8ebf2;
+        --accent: #6558e8;
+        --accent2: #8d83ff;
+        --mint: #dff7ed;
+        --green: #17865e;
+        --orange: #f0a34a;
+        --red: #dc6565;
+        --shadow: 0 12px 36px rgba(31, 42, 75, 0.07);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .ghost.delete {
+        color: var(--red);
+        border-color: var(--red);
+      }
+      .app {
+        max-width: 1180px;
+        margin: auto;
+        padding: 28px 28px 70px;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 34px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-weight: 800;
+        font-size: 20px;
+        letter-spacing: -0.6px;
+      }
+      .logo {
+        width: 38px;
+        height: 38px;
+        border-radius: 13px;
+        background: linear-gradient(135deg, #6558e8, #9c91ff);
+        display: grid;
+        place-items: center;
+        color: white;
+        box-shadow: 0 7px 18px #6558e844;
+      }
+      .logo svg {
+        width: 21px;
+      }
+      .top-right {
+        font-size: 12px;
+        color: var(--muted);
+        background: #fff;
+        padding: 9px 13px;
+        border: 1px solid var(--line);
+        border-radius: 99px;
+      }
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+      .eyebrow {
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .hero h1 {
+        font-size: clamp(27px, 4vw, 38px);
+        letter-spacing: -1.4px;
+        margin: 0 0 8px;
+      }
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .primary {
+        border: 0;
+        background: var(--accent);
+        color: #fff;
+        padding: 12px 17px;
+        border-radius: 12px;
+        font-weight: 700;
+        box-shadow: 0 7px 16px #6558e833;
+        transition: 0.2s;
+      }
+      .primary:hover {
+        transform: translateY(-1px);
+        background: #5549d6;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+      .stat {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 17px;
+        padding: 18px 20px;
+        box-shadow: 0 3px 12px #1f2a4a05;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 9px;
+      }
+      .stat-value {
+        font-size: 27px;
+        font-weight: 800;
+        letter-spacing: -1px;
+      }
+      .stat-foot {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 18px;
+      }
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 19px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .panel-head {
+        padding: 19px 21px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+      }
+      .panel-head h2 {
+        font-size: 15px;
+        margin: 0;
+      }
+      .panel-head span {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .item-list {
+        padding: 7px 12px;
+      }
+      .item {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 14px 9px;
+        border-bottom: 1px solid #f0f1f5;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: 0.15s;
+      }
+      .item:last-child {
+        border-bottom: 0;
+      }
+      .item:hover {
+        background: #f8f8ff;
+      }
+      .item-icon {
+        width: 43px;
+        height: 43px;
+        border-radius: 14px;
+        background: #f0efff;
+        display: grid;
+        place-items: center;
+        font-size: 21px;
+        flex-shrink: 0;
+      }
+      .item-main {
+        min-width: 0;
+        flex: 1;
+      }
+      .item-name {
+        font-size: 13px;
+        font-weight: 750;
+        margin-bottom: 4px;
+      }
+      .item-meta {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .item-side {
+        text-align: right;
+      }
+      .avg {
+        font-size: 15px;
+        font-weight: 800;
+      }
+      .avg small {
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .trend {
+        font-size: 10px;
+        margin-top: 4px;
+        color: var(--green);
+      }
+      .chev {
+        color: #aab1c1;
+        margin-left: 3px;
+      }
+      .empty {
+        padding: 35px 18px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .empty b {
+        display: block;
+        color: var(--ink);
+        margin-bottom: 6px;
+      }
+      .right-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .log-list {
+        padding: 6px 18px 12px;
+      }
+      .log-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 2px;
+        border-bottom: 1px solid #f0f1f5;
+        font-size: 12px;
+      }
+      .log-row:last-child {
+        border: 0;
+      }
+      .log-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+      .log-date {
+        font-weight: 650;
+      }
+      .log-item {
+        color: var(--muted);
+        font-size: 11px;
+        margin-top: 3px;
+      }
+      .log-right {
+        font-weight: 700;
+      }
+      .tag {
+        font-size: 10px;
+        padding: 5px 8px;
+        border-radius: 99px;
+        background: #f1f0ff;
+        color: var(--accent);
+      }
+      .hint {
+        padding: 14px 18px;
+        background: #fafaff;
+        border-top: 1px solid var(--line);
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .detail {
+        display: none;
+        margin-top: 19px;
+      }
+      .detail.show {
+        display: block;
+        animation: fade 0.25s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .detail-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--line);
+      }
+      .detail-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .detail-title h2 {
+        margin: 0;
+        font-size: 19px;
+      }
+      .detail-title p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .ghost {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 10px;
+        padding: 8px 11px;
+        color: #5f687b;
+        font-size: 11px;
+      }
+      .detail-body {
+        padding: 20px 22px;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .metric {
+        background: #f8f8fc;
+        border-radius: 12px;
+        padding: 13px;
+      }
+      .metric label {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        margin-bottom: 6px;
+      }
+      .metric strong {
+        font-size: 19px;
+        letter-spacing: -0.5px;
+      }
+      .metric small {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .chart-wrap {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 14px 9px;
+        margin-bottom: 15px;
+      }
+      .chart-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 2px 7px;
+      }
+      .chart-top b {
+        font-size: 12px;
+      }
+      .chart-top span {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      canvas {
+        width: 100%;
+        height: 210px;
+        display: block;
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        font-size: 10px;
+        color: var(--muted);
+        padding: 3px 3px 5px;
+      }
+      .legend i {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 5px;
+        background: var(--accent);
+      }
+      .legend .linekey {
+        background: #e9a34e;
+      }
+      .insight {
+        background: #f4f3ff;
+        border: 1px solid #e8e5ff;
+        padding: 13px 15px;
+        border-radius: 12px;
+        font-size: 12px;
+        line-height: 1.65;
+        color: #4e4a7c;
+      }
+      .insight b {
+        color: #39347c;
+      }
+      .detail-logs {
+        margin-top: 17px;
+      }
+      .detail-logs h3 {
+        font-size: 12px;
+        margin: 0 0 8px;
+      }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: #12182b66;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        z-index: 5;
+      }
+      .modal-backdrop.open {
+        display: flex;
+      }
+      .modal {
+        width: min(440px, 100%);
+        background: #fff;
+        border-radius: 19px;
+        padding: 23px;
+        box-shadow: 0 25px 80px #11172b44;
+      }
+      .modal h2 {
+        margin: 0 0 5px;
+        font-size: 19px;
+      }
+      .modal p {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .field {
+        margin-bottom: 13px;
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .field input,
+      .field select {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        outline: none;
+        color: var(--ink);
+      }
+      .field input:focus,
+      .field select:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px #6558e818;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 18px;
+      }
+      .secondary {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 11px 15px;
+        border-radius: 11px;
+        color: #626b7e;
+      }
+      .toast {
+        position: fixed;
+        bottom: 22px;
+        left: 50%;
+        transform: translate(-50%, 20px);
+        opacity: 0;
+        background: #20283b;
+        color: white;
+        padding: 11px 16px;
+        border-radius: 99px;
+        font-size: 12px;
+        transition: 0.25s;
+        pointer-events: none;
+        z-index: 8;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+      .footnote {
+        text-align: center;
+        color: #9aa2b2;
+        font-size: 10px;
+        margin-top: 25px;
+      }
+      @media (max-width: 800px) {
+        .app {
+          padding: 20px 15px 45px;
+        }
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          align-items: start;
+          flex-direction: column;
+        }
+        .hero .primary {
+          width: 100%;
+        }
+        .stats {
+          gap: 8px;
+        }
+        .stat {
+          padding: 14px 12px;
+        }
+        .stat-value {
+          font-size: 22px;
+        }
+        .stat-label {
+          font-size: 10px;
+        }
+        .metrics {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .topbar {
+          margin-bottom: 27px;
+        }
+        .detail-head {
+          padding: 17px;
+        }
+        .detail-body {
+          padding: 15px;
+        }
+        .panel-head {
+          padding: 16px 17px;
+        }
+      }
+      @media (max-width: 390px) {
+        .top-right {
+          font-size: 10px;
+        }
+        .stats {
+          grid-template-columns: 1fr 1fr;
+        }
+        .stats .stat:last-child {
+          grid-column: span 2;
+        }
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* =========================================
+   FIRESTORE SYNC STATUS
+   ========================================= */
+
+      .sync-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        white-space: nowrap;
+
+        transition:
+          color 0.2s ease,
+          background-color 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      /* วงกลมสถานะ */
+
+      .sync-pulse {
+        width: 8px;
+        height: 8px;
+        flex: 0 0 8px;
+
+        display: inline-block;
+        border-radius: 50%;
+
+        background: #9aa2b2;
+      }
+
+      /* =========================================
+   CONNECTED
+   ========================================= */
+
+      .sync-status[data-state="connected"] {
+        color: #137a50;
+        background: #f5fcf8;
+        border-color: #c9ead9;
+      }
+
+      .sync-status[data-state="connected"] .sync-pulse {
+        background: #22b573;
+
+        animation: syncPulse 1.8s ease-out infinite;
+      }
+
+      /* Green Pulse Animation */
+
+      @keyframes syncPulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(34, 181, 115, 0.45);
+        }
+
+        70% {
+          box-shadow: 0 0 0 6px rgba(34, 181, 115, 0);
+        }
+
+        100% {
+          box-shadow: 0 0 0 0 rgba(34, 181, 115, 0);
+        }
+      }
+
+      /* =========================================
+   LOADING
+   ========================================= */
+
+      .sync-status[data-state="loading"] {
+        color: #946200;
+        background: #fffaf0;
+        border-color: #f3dfad;
+      }
+
+      .sync-status[data-state="loading"] .sync-pulse {
+        background: #e4a33b;
+
+        animation: syncBlink 1s ease-in-out infinite;
+      }
+
+      @keyframes syncBlink {
+        50% {
+          opacity: 0.35;
+        }
+      }
+
+      /* =========================================
+   ERROR
+   ========================================= */
+
+      .sync-status[data-state="error"] {
+        color: #b42318;
+        background: #fff5f5;
+        border-color: #f3cccc;
+      }
+
+      .sync-status[data-state="error"] .sync-pulse {
+        background: #dc6565;
+
+        animation: none;
+        box-shadow: none;
+      }
+
+      /* =========================================
+   OFFLINE / NOT LOGGED IN
+   ========================================= */
+
+      .sync-status[data-state="offline"] {
+        color: #667085;
+        background: #f8f9fb;
+        border-color: #e0e4eb;
+      }
+
+      .sync-status[data-state="offline"] .sync-pulse {
+        background: #9aa2b2;
+
+        animation: none;
+        box-shadow: none;
+      }
+
+      /* =========================================
+   FIRESTORE ICON
+   ========================================= */
+
+      .firestore-icon {
+        display: none;
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        flex: 0 0 22px;
+      }
+
+      /* =========================================
+   MOBILE RESPONSIVE
+   ========================================= */
+
+      @media (max-width: 800px) {
+        .sync-status {
+          width: 40px;
+          height: 40px;
+
+          padding: 0;
+          gap: 0;
+
+          justify-content: center;
+          border-radius: 13px;
+        }
+
+        /* ซ่อนข้อความบน Mobile */
+
+        .sync-status .sync-label {
+          position: absolute;
+
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+
+          white-space: nowrap;
+          border: 0;
+        }
+
+        /* ซ่อนวงกลม Pulse บน Mobile */
+
+        .sync-status .sync-pulse {
+          display: none;
+        }
+
+        /* แสดง Firestore Icon */
+
+        .sync-status .firestore-icon {
+          display: block;
+        }
+      }
+
+      /* =========================================
+   ACCESSIBILITY
+   ลด Animation หากผู้ใช้ตั้งค่าให้ลดการเคลื่อนไหว
+   ========================================= */
+
+      @media (prefers-reduced-motion: reduce) {
+        .sync-pulse {
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Authentication Loading Screen -->
+    <div class="modal-backdrop open" id="loadingBackdrop" style="z-index: 30">
+      <div class="modal" style="text-align: center">
+        <div
+          style="
+            width: 36px;
+            height: 36px;
+            margin: 0 auto 16px;
+            border: 4px solid #e8e5ff;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+          "
+        ></div>
+
+        <h2>กำลังตรวจสอบ Session</h2>
+        <p style="margin-bottom: 0">กรุณารอสักครู่...</p>
+      </div>
+    </div>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z" />
+              <path d="M12 12 20 7.5M12 12 4 7.5M12 12v9" />
+            </svg>
+          </div>
+          repeatly
+        </div>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+          "
+        >
+          <!-- <div class="top-right" id="syncStatus">● กำลังเตรียมระบบ</div> -->
+          <div
+            class="top-right sync-status"
+            id="syncStatus"
+            data-state="loading"
+            role="status"
+            aria-live="polite"
+            title="กำลังเตรียมระบบ"
+          >
+            <!-- Pulse indicator สำหรับ Desktop -->
+            <span class="sync-pulse" aria-hidden="true"></span>
+
+            <!-- Firestore icon สำหรับ Mobile -->
+
+            <img
+              class="firestore-icon"
+              src="./assets/firestore-logo.svg"
+              alt="Firestore"
+              title="Firestore connection status"
+            />
+
+            <!-- ข้อความสถานะสำหรับ Desktop -->
+
+            <span class="sync-label">กำลังเตรียมระบบ</span>
+          </div>
+
+          <button class="ghost" id="signOutBtn" style="display: none">
+            ออกจากระบบ
+          </button>
+        </div>
+      </header>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">PERSONAL PURCHASE TRACKER</div>
+          <h1>เข้าใจจังหวะการซื้อของคุณ</h1>
+          <p>บันทึกวันที่ซื้อ แล้วดูว่าของแต่ละชิ้นหมดเร็วแค่ไหน</p>
+        </div>
+        <button class="primary" id="addItemBtn">＋ เพิ่มไอเท็มใหม่</button>
+      </section>
+      <section class="stats">
+        <div class="stat">
+          <div class="stat-label">ไอเท็มทั้งหมด</div>
+          <div class="stat-value" id="totalItems">0</div>
+          <div class="stat-foot">รายการที่กำลังติดตาม</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">บันทึกการซื้อ</div>
+          <div class="stat-value" id="totalLogs">0</div>
+          <div class="stat-foot">จำนวนครั้งที่บันทึกไว้</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">ความถี่เฉลี่ย</div>
+          <div class="stat-value" id="overallAvg">—</div>
+          <div class="stat-foot">วันต่อรอบ · จากไอเท็มที่มีข้อมูล</div>
+        </div>
+      </section>
+      <div class="layout">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>ไอเท็มของฉัน</h2>
+            <span>กดเพื่อดูรายละเอียด →</span>
+          </div>
+          <div class="item-list" id="itemList"></div>
+        </section>
+        <div class="right-stack">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>บันทึกล่าสุด</h2>
+              <span id="logCount">0 รายการ</span>
+            </div>
+            <div class="log-list" id="recentLogs"></div>
+            <div class="hint">
+              บันทึกทุกครั้งที่ซื้อของชิ้นเดิม
+              เพื่อให้ระบบคำนวณช่วงห่างระหว่างการซื้อได้แม่นยำขึ้น
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h2>วิธีอ่านค่าความถี่</h2>
+              <span class="tag">How it works</span>
+            </div>
+            <div
+              style="
+                padding: 16px 19px;
+                font-size: 12px;
+                line-height: 1.75;
+                color: #687286;
+              "
+            >
+              <b style="color: #20283b">ค่าเฉลี่ย (Average)</b> —
+              รวมจำนวนวันระหว่างการซื้อแต่ละครั้ง แล้วหารด้วยจำนวนช่วง<br />
+              <b style="color: #20283b">ค่ามัธยฐาน (Median)</b> —
+              ค่ากึ่งกลางของช่วงห่าง ช่วยลดผลกระทบจากรอบที่ผิดปกติ<br />
+              <b style="color: #20283b">ความสม่ำเสมอ</b> —
+              ดูว่ารอบซื้อใกล้เคียงกันแค่ไหนจากส่วนเบี่ยงเบนมาตรฐาน
+            </div>
+          </section>
+        </div>
+      </div>
+      <section class="panel detail" id="detailPanel">
+        <div class="detail-head">
+          <div class="detail-title">
+            <div class="item-icon" id="detailIcon">🧴</div>
+            <div>
+              <h2 id="detailName">Item</h2>
+              <p id="detailSubtitle">Purchase rhythm analysis</p>
+            </div>
+          </div>
+          <button class="ghost" id="closeDetail">ปิดรายละเอียด ✕</button>
+        </div>
+        <div class="detail-body">
+          <div class="metrics">
+            <div class="metric">
+              <label>เฉลี่ยต่อรอบ</label><strong id="dAvg">—</strong>
+              <small>วัน</small>
+            </div>
+            <div class="metric">
+              <label>ค่ามัธยฐาน</label><strong id="dMedian">—</strong>
+              <small>วัน</small>
+            </div>
+            <div class="metric">
+              <label>ซื้อมาแล้ว</label><strong id="dCount">0</strong>
+              <small>ครั้ง</small>
+            </div>
+            <div class="metric">
+              <label>ส่วนเบี่ยงเบนมาตรฐาน</label><strong id="dStd">—</strong>
+              <small>วัน</small>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-top">
+              <b>Purchase interval timeline</b
+              ><span>ช่วงห่างระหว่างการซื้อ (วัน)</span>
+            </div>
+            <canvas id="chart" width="900" height="260"></canvas>
+            <div class="legend">
+              <span><i></i>ช่วงห่างจริง</span
+              ><span><i class="linekey"></i>ค่าเฉลี่ย</span>
+            </div>
+          </div>
+          <div class="insight" id="insight"></div>
+          <div class="detail-logs">
+            <h3>ประวัติการซื้อของไอเท็มนี้</h3>
+            <div id="itemLogs"></div>
+          </div>
+        </div>
+      </section>
+      <div class="footnote" id="footnote">
+        Repeatly · ข้อมูลของคุณจะซิงก์กับ Firebase Firestore เมื่อเข้าสู่ระบบ
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="purchaseModal">
+      <div class="modal">
+        <h2>บันทึกการซื้อ</h2>
+
+        <p id="purchaseItemName"></p>
+
+        <form id="purchaseForm">
+          <label for="purchaseDate">วันที่ซื้อ</label>
+
+          <input type="date" id="purchaseDate" name="purchaseDate" required />
+
+          <div class="modal-actions">
+            <button type="button" class="ghost" id="cancelPurchaseBtn">
+              ยกเลิก
+            </button>
+
+            <button type="submit" class="primary">บันทึก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal">
+        <h2 id="modalTitle">เพิ่มไอเท็มใหม่</h2>
+        <p id="modalDesc">เริ่มติดตามความถี่ในการซื้อของชิ้นนี้</p>
+        <form id="itemForm">
+          <div class="field">
+            <label>ชื่อไอเท็ม</label
+            ><input
+              id="itemName"
+              required
+              maxlength="50"
+              placeholder="เช่น แชมพู, กาแฟ, อาหารแมว"
+            />
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>หมวดหมู่</label
+              ><select id="itemCategory">
+                <option>ของใช้ส่วนตัว</option>
+                <option>อาหารและเครื่องดื่ม</option>
+                <option>ของใช้ในบ้าน</option>
+                <option>สุขภาพ</option>
+                <option>อื่น ๆ</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>ไอคอน</label
+              ><select id="itemIcon">
+                <option value="🧴">🧴 ของใช้</option>
+                <option value="☕">☕ เครื่องดื่ม</option>
+                <option value="🛒">🛒 ของกิน</option>
+                <option value="🧻">🧻 ของใช้บ้าน</option>
+                <option value="🧼">🧼 ทำความสะอาด</option>
+                <option value="💊">💊 สุขภาพ</option>
+                <option value="🐾">🐾 สัตว์เลี้ยง</option>
+                <option value="📦">📦 อื่น ๆ</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>วันที่ซื้อครั้งแรก</label
+            ><input type="date" id="firstDate" required />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="secondary" id="cancelModal">
+              ยกเลิก</button
+            ><button class="primary" type="submit">บันทึกไอเท็ม</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-backdrop" id="authBackdrop" style="z-index: 20">
+      <div class="modal">
+        <h2>เข้าสู่ระบบ Repeatly</h2>
+        <p>เข้าสู่ระบบเพื่อบันทึกและซิงก์ข้อมูลของคุณผ่าน Firebase</p>
+        <button
+          class="primary"
+          type="button"
+          id="googleSignIn"
+          style="
+            width: 100%;
+            margin-bottom: 15px;
+            background: #fff;
+            color: #20283b;
+            border: 1px solid var(--line);
+            box-shadow: none;
+          "
+        >
+          เข้าสู่ระบบด้วย Google
+        </button>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            margin: 0 0 14px;
+          "
+        >
+          <span style="height: 1px; background: var(--line); flex: 1"></span
+          >หรือใช้อีเมลและรหัสผ่าน<span
+            style="height: 1px; background: var(--line); flex: 1"
+          ></span>
+        </div>
+        <form id="authForm">
+          <div class="field">
+            <label>อีเมล</label
+            ><input
+              id="authEmail"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="name@example.com"
+            />
+          </div>
+          <div class="field">
+            <label>รหัสผ่าน</label
+            ><input
+              id="authPassword"
+              type="password"
+              minlength="6"
+              autocomplete="current-password"
+              required
+              placeholder="อย่างน้อย 6 ตัวอักษร"
+            />
+          </div>
+          <div
+            class="modal-actions"
+            style="justify-content: space-between; flex-wrap: wrap"
+          >
+            <button type="button" class="secondary" id="createAccountBtn">
+              สมัครสมาชิก
+            </button>
+            <button type="submit" class="primary">เข้าสู่ระบบ</button>
+          </div>
+        </form>
+        <p
+          id="authError"
+          role="alert"
+          style="color: var(--red); margin: 12px 0 0"
+        ></p>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup,
+        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+      } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+      // ใส่ค่าจาก Firebase Console > Project settings > Your apps
+      const firebaseConfig = {
+        apiKey: "AIzaSyCo-Uvd87_fCwoSEBbR14782pGERGvV9H8",
+        authDomain: "todo-list-28ba8.firebaseapp.com",
+        projectId: "todo-list-28ba8",
+        storageBucket: "todo-list-28ba8.firebasestorage.app",
+        messagingSenderId: "647286439081",
+        appId: "1:647286439081:web:4a2008152be419ab74fdb8",
+      };
+      const firebaseConfigured =
+        firebaseConfig.apiKey !== "YOUR_API_KEY" &&
+        firebaseConfig.projectId !== "YOUR_PROJECT_ID";
+      const app = firebaseConfigured ? initializeApp(firebaseConfig) : null;
+      const auth = app ? getAuth(app) : null;
+      const db = app ? getFirestore(app) : null;
+      let currentUser = null;
+      let cloudReady = false;
+      let saveQueue = Promise.resolve();
+
+      const KEY = "repeatly-prototype-v1";
+      const DAY = 86400000;
+      const today = () => new Date().toISOString().slice(0, 10);
+      const dateObj = (s) => new Date(s + "T00:00:00");
+      const fmtDate = (s) =>
+        dateObj(s).toLocaleDateString("th-TH", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+      const daysBetween = (a, b) => Math.round((dateObj(b) - dateObj(a)) / DAY);
+      const uid = () => Math.random().toString(36).slice(2, 10);
+      // const seed = [
+      //   {
+      //     id: "a1",
+      //     name: "แชมพู",
+      //     category: "ของใช้ส่วนตัว",
+      //     icon: "🧴",
+      //     dates: [
+      //       "2026-07-02",
+      //       "2026-07-29",
+      //       "2026-08-26",
+      //       "2026-09-21",
+      //       "2026-10-19",
+      //     ],
+      //   },
+      //   {
+      //     id: "a2",
+      //     name: "กาแฟแคปซูล",
+      //     category: "อาหารและเครื่องดื่ม",
+      //     icon: "☕",
+      //     dates: [
+      //       "2026-08-01",
+      //       "2026-08-10",
+      //       "2026-08-20",
+      //       "2026-08-30",
+      //       "2026-09-09",
+      //       "2026-09-19",
+      //       "2026-09-29",
+      //       "2026-10-09",
+      //       "2026-10-19",
+      //       "2026-10-29",
+      //     ],
+      //   },
+      //   {
+      //     id: "a3",
+      //     name: "ทิชชู่",
+      //     category: "ของใช้ในบ้าน",
+      //     icon: "🧻",
+      //     dates: [
+      //       "2026-06-12",
+      //       "2026-07-15",
+      //       "2026-08-20",
+      //       "2026-09-17",
+      //       "2026-10-24",
+      //     ],
+      //   },
+      //   {
+      //     id: "a4",
+      //     name: "อาหารแมว",
+      //     category: "อื่น ๆ",
+      //     icon: "🐾",
+      //     dates: [
+      //       "2026-09-01",
+      //       "2026-09-15",
+      //       "2026-09-29",
+      //       "2026-10-13",
+      //       "2026-10-27",
+      //     ],
+      //   },
+      // ];
+      let data = {
+        items: [],
+      };
+
+      // if (!data || !Array.isArray(data.items)) {
+      //   data = {
+      //     items: seed.map((x) => ({
+      //       id: x.id,
+      //       name: x.name,
+      //       category: x.category,
+      //       icon: x.icon,
+      //       logs: x.dates.map((date) => ({ id: uid(), date })),
+      //     })),
+      //   };
+      //   save();
+      // }
+      function save() {
+        // localStorage.setItem(KEY, JSON.stringify(data));
+        if (!db || !currentUser || !cloudReady) return;
+        const snapshot = JSON.parse(JSON.stringify(data));
+        saveQueue = saveQueue
+          .then(() =>
+            setDoc(
+              doc(db, "users", currentUser.uid, "appData", "repeatly"),
+              snapshot,
+            ),
+          )
+          .then(() => setSyncStatus("● ซิงก์กับ Firestore แล้ว"))
+          .catch((err) => {
+            console.error("Firestore save failed:", err);
+            setSyncStatus("● ซิงก์ไม่สำเร็จ");
+            toast("บันทึกขึ้นคลาวด์ไม่สำเร็จ กรุณาตรวจสอบการตั้งค่า");
+          });
+      }
+      function sortedLogs(item) {
+        return [...item.logs].sort((a, b) => a.date.localeCompare(b.date));
+      }
+      function intervals(item) {
+        const logs = sortedLogs(item);
+        return logs
+          .slice(1)
+          .map((x, i) => daysBetween(logs[i].date, x.date))
+          .filter((x) => x >= 0);
+      }
+      function mean(a) {
+        return a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
+      }
+      function median(a) {
+        if (!a.length) return null;
+        const s = [...a].sort((x, y) => x - y),
+          m = Math.floor(s.length / 2);
+        return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+      }
+      function std(a) {
+        if (a.length < 2) return null;
+        const m = mean(a);
+        return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / a.length);
+      }
+      function nfmt(n) {
+        return n == null
+          ? "—"
+          : Number.isInteger(n)
+            ? n.toString()
+            : n.toFixed(1);
+      }
+      function allLogs() {
+        return data.items
+          .flatMap((i) =>
+            i.logs.map((l) => ({
+              ...l,
+              itemName: i.name,
+              itemId: i.id,
+              icon: i.icon,
+            })),
+          )
+          .sort((a, b) => b.date.localeCompare(a.date));
+      }
+      function render() {
+        document.getElementById("totalItems").textContent = data.items.length;
+        document.getElementById("totalLogs").textContent = data.items.reduce(
+          (s, i) => s + i.logs.length,
+          0,
+        );
+        const avgs = data.items
+          .map((i) => mean(intervals(i)))
+          .filter((x) => x != null);
+        document.getElementById("overallAvg").textContent = avgs.length
+          ? nfmt(mean(avgs)) + " วัน"
+          : "—";
+        const list = document.getElementById("itemList");
+        if (!data.items.length) {
+          list.innerHTML =
+            '<div class="empty"><b>ยังไม่มีไอเท็ม</b>กด “เพิ่มไอเท็มใหม่” เพื่อเริ่มบันทึก</div>';
+        } else
+          list.innerHTML = data.items
+            .map((i) => {
+              const iv = intervals(i),
+                avg = mean(iv),
+                last = sortedLogs(i).at(-1)?.date;
+              return `<div class="item" data-id="${i.id}"><div class="item-icon">${i.icon}</div><div class="item-main"><div class="item-name">${esc(i.name)}</div><div class="item-meta">${esc(i.category)} · ซื้อครั้งล่าสุด ${last ? fmtDate(last) : "—"}</div></div><div class="item-side"><div class="avg">${avg == null ? "เริ่มต้น" : nfmt(avg)} <small>${avg == null ? "" : "วัน/รอบ"}</small></div><div class="trend">${iv.length ? iv.length + " ช่วงที่วัดได้" : "ต้องมีอย่างน้อย 2 ครั้ง"}</div></div><span class="chev">›</span></div>`;
+            })
+            .join("");
+        list
+          .querySelectorAll(".item")
+          .forEach((el) =>
+            el.addEventListener("click", () => showDetail(el.dataset.id)),
+          );
+        const logs = allLogs().slice(0, 7);
+        document.getElementById("logCount").textContent =
+          allLogs().length + " รายการ";
+        document.getElementById("recentLogs").innerHTML = logs.length
+          ? logs
+              .map(
+                (l) =>
+                  `<div class="log-row"><div class="log-left"><div class="dot"></div><div><div class="log-date">${fmtDate(l.date)}</div><div class="log-item">${l.icon} ${esc(l.itemName)}</div></div></div><div class="log-right">ซื้อแล้ว</div></div>`,
+              )
+              .join("")
+          : '<div class="empty">ยังไม่มีประวัติการซื้อ</div>';
+      }
+      function esc(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      }
+      let activeId = null;
+      function showDetail(id) {
+        const item = data.items.find((i) => i.id === id);
+        if (!item) return;
+        activeId = id;
+        const logs = sortedLogs(item),
+          iv = intervals(item),
+          avg = mean(iv),
+          med = median(iv),
+          sd = std(iv);
+        document.getElementById("detailPanel").classList.add("show");
+        document.getElementById("detailIcon").textContent = item.icon;
+        document.getElementById("detailName").textContent = item.name;
+        document.getElementById("detailSubtitle").textContent =
+          item.category + " · บันทึก " + logs.length + " ครั้ง";
+        document.getElementById("dAvg").textContent = nfmt(avg);
+        document.getElementById("dMedian").textContent = nfmt(med);
+        document.getElementById("dCount").textContent = logs.length;
+        document.getElementById("dStd").textContent = nfmt(sd);
+        let insight = iv.length
+          ? `จากข้อมูล <b>${iv.length} ช่วง</b> พบว่าคุณซื้อ “${esc(item.name)}” ห่างกันเฉลี่ย <b>${nfmt(avg)} วัน</b> (มัธยฐาน ${nfmt(med)} วัน)${sd != null ? ` โดยส่วนเบี่ยงเบนมาตรฐานอยู่ที่ ${nfmt(sd)} วัน` : ""} `
+          : "ต้องมีประวัติอย่างน้อย 2 ครั้ง เพื่อคำนวณช่วงห่างระหว่างการซื้อได้";
+        if (iv.length >= 2 && sd / avg < 0.2)
+          insight += "รูปแบบการซื้อค่อนข้างสม่ำเสมอ";
+        else if (iv.length >= 2 && sd / avg > 0.5)
+          insight +=
+            "ช่วงเวลาการซื้อยังผันผวน ควรเก็บข้อมูลเพิ่มก่อนใช้คาดการณ์";
+        else if (iv.length)
+          insight +=
+            "เก็บข้อมูลเพิ่มอีกสักระยะเพื่อประเมินความสม่ำเสมอให้ดีขึ้น";
+        document.getElementById("insight").innerHTML =
+          "<b>สรุปจากข้อมูลของคุณ</b><br>" +
+          insight +
+          ". ค่านี้เป็นสถิติย้อนหลัง ไม่ใช่การรับประกันวันซื้อครั้งถัดไป";
+        document.getElementById("itemLogs").innerHTML =
+          logs
+            .slice()
+            .reverse()
+            .map(
+              (l) =>
+                `<div class="log-row"><div class="log-left"><div class="dot"></div><div class="log-date">${fmtDate(l.date)}</div></div><div class="log-right"><button class="ghost delete-log" data-log="${l.id}">ลบ</button></div></div>`,
+            )
+            .join("") +
+          `<div style="padding-top:12px"><button class="primary" id="addPurchase">＋ บันทึกการซื้อ</button> <button class="ghost delete" id="deleteItem">ลบไอเท็มนี้</button></div>`;
+        document.getElementById("addPurchase").onclick = () =>
+          openPurchaseModal(item.id, item.name);
+        document.getElementById("deleteItem").onclick = () => {
+          if (
+            confirm(
+              "ลบไอเท็มและประวัติทั้งหมดของ " + item.name + " ใช่หรือไม่?",
+            )
+          ) {
+            data.items = data.items.filter((x) => x.id !== id);
+            save();
+            document.getElementById("detailPanel").classList.remove("show");
+            render();
+            toast("ลบไอเท็มแล้ว");
+          }
+        };
+        document.querySelectorAll(".delete-log").forEach(
+          (b) =>
+            (b.onclick = () => {
+              if (confirm(`ลบประวัติการซื้อนี้?`)) {
+                item.logs = item.logs.filter((l) => l.id !== b.dataset.log);
+                save();
+                showDetail(id);
+                render();
+              }
+            }),
+        );
+        drawChart(iv, avg);
+        setTimeout(
+          () =>
+            document
+              .getElementById("detailPanel")
+              .scrollIntoView({ behavior: "smooth", block: "start" }),
+          30,
+        );
+      }
+      function drawChart(values, avg) {
+        const c = document.getElementById("chart"),
+          ctx = c.getContext("2d"),
+          w = c.width,
+          h = c.height;
+        ctx.clearRect(0, 0, w, h);
+        const left = 48,
+          right = 20,
+          top = 22,
+          bottom = 38,
+          plotW = w - left - right,
+          plotH = h - top - bottom;
+        if (!values.length) {
+          ctx.fillStyle = "#8b93a5";
+          ctx.font = "16px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(
+            "เพิ่มประวัติการซื้อครั้งที่ 2 เพื่อเริ่มดูกราฟ",
+            w / 2,
+            h / 2,
+          );
+          return;
+        }
+        const max = Math.max(7, ...values, avg || 0) * 1.25;
+        ctx.font = "11px sans-serif";
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#9299a8";
+        ctx.strokeStyle = "#edf0f5";
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+          let y = top + (plotH * i) / 4;
+          ctx.beginPath();
+          ctx.moveTo(left, y);
+          ctx.lineTo(w - right, y);
+          ctx.stroke();
+          ctx.fillText(Math.round(max * (1 - i / 4)) + " วัน", left - 9, y + 4);
+        }
+        if (avg != null) {
+          const y = top + plotH * (1 - avg / max);
+          ctx.strokeStyle = "#e9a34e";
+          ctx.setLineDash([7, 5]);
+          ctx.beginPath();
+          ctx.moveTo(left, y);
+          ctx.lineTo(w - right, y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        const step = plotW / values.length,
+          barW = Math.min(46, step * 0.48);
+        values.forEach((v, i) => {
+          const bh = (v / max) * plotH,
+            x = left + step * i + (step - barW) / 2,
+            y = top + plotH - bh;
+          const grad = ctx.createLinearGradient(0, y, 0, y + bh);
+          grad.addColorStop(0, "#9187ff");
+          grad.addColorStop(1, "#6558e8");
+          ctx.fillStyle = grad;
+          roundRect(ctx, x, y, barW, bh, 7);
+          ctx.fill();
+          ctx.fillStyle = "#596174";
+          ctx.textAlign = "center";
+          ctx.font = "11px sans-serif";
+          ctx.fillText(v, x + barW / 2, Math.max(top + 12, y - 7));
+          ctx.fillStyle = "#9299a8";
+          ctx.fillText("รอบ " + (i + 1), x + barW / 2, h - 13);
+        });
+      }
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+      function addPurchase(item) {
+        selectedPurchaseItemId = item.id;
+
+        // แสดงชื่อไอเท็มใน Popup
+        document.getElementById("purchaseItemName").textContent = item.name;
+
+        // กำหนดวันที่ปัจจุบันเป็นค่าเริ่มต้น
+        document.getElementById("purchaseDate").value = today();
+
+        // เปิด Popup
+        document.getElementById("purchaseModal").classList.add("open");
+      }
+      const backdrop = document.getElementById("modalBackdrop");
+      function openModal() {
+        document.getElementById("itemForm").reset();
+        document.getElementById("firstDate").value = today();
+        backdrop.classList.add("open");
+      }
+      function closeModal() {
+        backdrop.classList.remove("open");
+      }
+      document.getElementById("addItemBtn").onclick = openModal;
+      document.getElementById("cancelModal").onclick = closeModal;
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+      document.getElementById("itemForm").onsubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById("itemName").value.trim(),
+          date = document.getElementById("firstDate").value;
+        if (
+          data.items.some((i) => i.name.toLowerCase() === name.toLowerCase())
+        ) {
+          toast("มีไอเท็มชื่อนี้แล้ว");
+          return;
+        }
+        data.items.push({
+          id: uid(),
+          name,
+          category: document.getElementById("itemCategory").value,
+          icon: document.getElementById("itemIcon").value,
+          logs: [{ id: uid(), date }],
+        });
+        save();
+        closeModal();
+        render();
+        toast("เพิ่มไอเท็มแล้ว");
+        showDetail(data.items.at(-1).id);
+      };
+      document.getElementById("closeDetail").onclick = () =>
+        document.getElementById("detailPanel").classList.remove("show");
+      let toastTimer;
+      function toast(s) {
+        const t = document.getElementById("toast");
+        t.textContent = s;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+      }
+      function setSyncStatus(text) {
+        const status = document.getElementById("syncStatus");
+
+        if (!status) {
+          console.warn("Firestore status element not found.");
+          return;
+        }
+
+        const label = status.querySelector(".sync-label");
+
+        // เก็บข้อความเดิมไว้ใน title สำหรับ Mobile
+        const cleanText = text.replace(/^●\s*/, "");
+
+        status.title = cleanText;
+
+        // อัปเดตข้อความบน Desktop
+        if (label) {
+          label.textContent = cleanText;
+        }
+
+        // กำหนดสถานะเริ่มต้น
+        let state = "loading";
+
+        // เชื่อมต่อ Firestore สำเร็จ
+        if (
+          cleanText.includes("เชื่อมต่อ Firestore แล้ว") ||
+          cleanText.includes("ซิงก์กับ Firestore แล้ว")
+        ) {
+          state = "connected";
+        }
+
+        // เกิดข้อผิดพลาด
+        else if (
+          cleanText.includes("ไม่สำเร็จ") ||
+          cleanText.includes("ข้อผิดพลาด") ||
+          cleanText.includes("Error")
+        ) {
+          state = "error";
+        }
+
+        // ยังไม่ได้เข้าสู่ระบบ
+        else if (cleanText.includes("ยังไม่ได้เข้าสู่ระบบ")) {
+          state = "offline";
+        }
+
+        // อัปเดตสถานะผ่าน data attribute
+        status.dataset.state = state;
+
+        // อัปเดตคำอธิบายสำหรับเทคโนโลยีช่วยการเข้าถึง
+        status.setAttribute("aria-label", cleanText);
+      }
+      function showLoading() {
+        document.getElementById("loadingBackdrop").classList.add("open");
+
+        document.getElementById("authBackdrop").classList.remove("open");
+
+        document.querySelector(".app").style.visibility = "hidden";
+      }
+
+      function hideLoading() {
+        document.getElementById("loadingBackdrop").classList.remove("open");
+
+        document.querySelector(".app").style.visibility = "visible";
+      }
+      function authError(message) {
+        document.getElementById("authError").textContent = message || "";
+      }
+      function friendlyAuthError(error) {
+        const messages = {
+          "auth/invalid-credential": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+          "auth/email-already-in-use": "อีเมลนี้มีบัญชีอยู่แล้ว",
+          "auth/weak-password": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+          "auth/invalid-email": "รูปแบบอีเมลไม่ถูกต้อง",
+          "auth/popup-closed-by-user":
+            "หน้าต่าง Google Login ถูกปิดก่อนเข้าสู่ระบบ",
+        };
+        return (
+          messages[error.code] || error.message || "เกิดข้อผิดพลาด กรุณาลองใหม่"
+        );
+      }
+      async function loadUserData(user) {
+        currentUser = user;
+        cloudReady = false;
+
+        showLoading();
+
+        document.getElementById("signOutBtn").style.display = "inline-block";
+
+        setSyncStatus("● กำลังโหลดข้อมูลจาก Firestore...");
+
+        try {
+          // 1. อ้างอิงข้อมูลของผู้ใช้ปัจจุบันใน Firestore
+          const ref = doc(db, "users", user.uid, "appData", "repeatly");
+
+          // 2. อ่านข้อมูลจาก Firestore เท่านั้น
+          const snap = await getDoc(ref);
+
+          if (snap.exists()) {
+            const remote = snap.data();
+
+            // 3. หากมี items เป็น Array ให้นำมาใช้
+            if (Array.isArray(remote.items)) {
+              data = remote;
+            } else {
+              // ไม่มี items หรือ items มีชนิดข้อมูลไม่ถูกต้อง
+              data = {
+                items: [],
+              };
+            }
+          } else {
+            // 4. ยังไม่มีเอกสารของผู้ใช้ใน Firestore
+            // ไม่อ่านข้อมูลจาก localStorage
+            data = {
+              items: [],
+            };
+          }
+
+          // 5. เตรียมข้อมูลและแสดงผล
+          render();
+
+          cloudReady = true;
+
+          setSyncStatus("● เชื่อมต่อ Firestore แล้ว");
+
+          document.getElementById("footnote").textContent =
+            "Repeatly · ข้อมูลจัดเก็บแยกตามบัญชีผู้ใช้ใน Firebase Firestore";
+
+          document.getElementById("authBackdrop").classList.remove("open");
+
+          hideLoading();
+        } catch (error) {
+          console.error("Firestore load failed:", error);
+
+          cloudReady = false;
+
+          setSyncStatus("● โหลดข้อมูลไม่สำเร็จ");
+
+          // ไม่ควรแสดงข้อมูลเก่าจาก localStorage
+          // และไม่ควรตีความว่าข้อมูลว่างเมื่อโหลดล้มเหลว
+          document.getElementById("authBackdrop").classList.remove("open");
+
+          hideLoading();
+
+          toast("โหลดข้อมูลไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่อ");
+        }
+      }
+      let selectedPurchaseItemId = null;
+
+      function openPurchaseModal(itemId, itemName) {
+        selectedPurchaseItemId = itemId;
+
+        document.getElementById("purchaseItemName").textContent = itemName;
+
+        const today = new Date();
+        const localDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+        document.getElementById("purchaseDate").value = localDate;
+
+        document.getElementById("purchaseModal").classList.add("open");
+      }
+
+      function closePurchaseModal() {
+        document.getElementById("purchaseModal").classList.remove("open");
+        selectedPurchaseItemId = null;
+      }
+
+      document
+        .getElementById("purchaseForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          // ค้นหาไอเท็มที่ผู้ใช้เลือก
+          const item = data.items.find(
+            (item) => item.id === selectedPurchaseItemId,
+          );
+
+          if (!item) {
+            toast("ไม่พบไอเท็มที่ต้องการบันทึก");
+            closePurchaseModal();
+            return;
+          }
+
+          const last = sortedLogs(item).at(-1)?.date;
+
+          const date = document.getElementById("purchaseDate").value;
+
+          // ตรวจสอบวันที่
+          if (
+            !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+            isNaN(dateObj(date).getTime())
+          ) {
+            toast("รูปแบบวันที่ไม่ถูกต้อง");
+            return;
+          }
+
+          // วันที่ใหม่ต้องอยู่หลังรายการล่าสุด
+          if (last && date <= last) {
+            toast("วันที่ซื้อใหม่ต้องอยู่หลังรายการล่าสุด (" + last + ")");
+            return;
+          }
+
+          // เพิ่มประวัติการซื้อ
+          item.logs.push({
+            id: uid(),
+            date,
+          });
+
+          // บันทึกและอัปเดต UI
+          save();
+          render();
+          showDetail(item.id);
+
+          closePurchaseModal();
+
+          toast("เพิ่มประวัติการซื้อแล้ว");
+        });
+      document
+        .getElementById("cancelPurchaseBtn")
+        .addEventListener("click", closePurchaseModal);
+      if (!firebaseConfigured) {
+        setSyncStatus("● ต้องตั้งค่า Firebase");
+        authError(
+          "กรุณาใส่ firebaseConfig ในไฟล์ และเปิดใช้งาน Authentication กับ Firestore ก่อน",
+        );
+      } else {
+        document.getElementById("googleSignIn").onclick = async () => {
+          authError("");
+          try {
+            await signInWithPopup(auth, new GoogleAuthProvider());
+          } catch (e) {
+            authError(friendlyAuthError(e));
+          }
+        };
+        document.getElementById("authForm").onsubmit = async (e) => {
+          e.preventDefault();
+          authError("");
+          try {
+            await signInWithEmailAndPassword(
+              auth,
+              document.getElementById("authEmail").value.trim(),
+              document.getElementById("authPassword").value,
+            );
+          } catch (err) {
+            authError(friendlyAuthError(err));
+          }
+        };
+        document.getElementById("createAccountBtn").onclick = async () => {
+          authError("");
+          const email = document.getElementById("authEmail").value.trim();
+          const password = document.getElementById("authPassword").value;
+          if (!email || password.length < 6) {
+            authError("กรอกอีเมล และรหัสผ่านอย่างน้อย 6 ตัวอักษร");
+            return;
+          }
+          try {
+            await createUserWithEmailAndPassword(auth, email, password);
+          } catch (err) {
+            authError(friendlyAuthError(err));
+          }
+        };
+        document.getElementById("signOutBtn").onclick = async () => {
+          try {
+            await signOut(auth);
+          } catch (e) {
+            toast("ออกจากระบบไม่สำเร็จ");
+          }
+        };
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            // มี Session: โหลดข้อมูลก่อนแสดง Dashboard
+            setSyncStatus("● กำลังโหลดข้อมูลจาก Firestore...");
+            loadUserData(user);
+          } else {
+            // ไม่มี Session: แสดงหน้า Login
+            currentUser = null;
+            cloudReady = false;
+            data = {
+              items: [],
+            };
+            document.getElementById("detailPanel").classList.remove("show");
+
+            render();
+            document.getElementById("signOutBtn").style.display = "none";
+
+            document.getElementById("authBackdrop").classList.add("open");
+
+            setSyncStatus("● ยังไม่ได้เข้าสู่ระบบ");
+            hideLoading();
+          }
+        });
+      }
+      render();
+    </script>
+  </body>
+</html>
