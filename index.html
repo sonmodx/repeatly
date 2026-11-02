@@ -18,6 +18,10 @@
     <link rel="apple-touch-icon" href="./assets/icons/icon-192.png" />
     <link rel="icon" type="image/x-icon" href="./assets/repeatly-icon.ico" />
     <link rel="shortcut icon" href="./assets/repeatly-icon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
     <style>
       :root {
         --bg: #f6f7fb;
@@ -801,6 +805,132 @@
           animation: none !important;
         }
       }
+      /* ========================================= 
+        PROFILE V.2
+
+       ========================================= */
+      .profile-wrapper {
+        position: relative;
+      }
+
+      .profile-trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 10px;
+      }
+
+      .profile-trigger:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-weight: 700;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .avatar-large {
+        width: 44px;
+        height: 44px;
+        font-size: 15px;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: 260px;
+        padding: 12px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px) scale(0.98);
+        transform-origin: top right;
+
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease,
+          visibility 180ms ease;
+
+        z-index: 100;
+      }
+
+      .profile-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
+
+      .profile-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 4px 12px;
+      }
+
+      .profile-details {
+        min-width: 0;
+        flex: 1;
+      }
+
+      #dropdownUsername {
+        font-size: 14px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      #dropdownEmail {
+        font-size: 12px;
+        color: #9ca3af;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-top: 3px;
+      }
+
+      .dropdown-divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin: 4px 0 8px;
+      }
+
+      .logout-button {
+        width: 100%;
+        display: inline-block;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: #dc2626;
+        font-size: 13px;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .logout-button:hover {
+        background: #fef2f2;
+      }
     </style>
   </head>
   <body>
@@ -874,9 +1004,36 @@
             <span class="sync-label">กำลังเตรียมระบบ</span>
           </div>
 
-          <button class="ghost" id="signOutBtn" style="display: none">
-            ออกจากระบบ
-          </button>
+          <div class="profile-wrapper" id="profileWrapper">
+            <button
+              class="profile-trigger"
+              id="profileTrigger"
+              type="button"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              <div class="avatar" id="userAvatar">U</div>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="profile-info">
+                <div class="avatar avatar-large" id="dropdownAvatar">U</div>
+
+                <div class="profile-details">
+                  <div id="dropdownUsername">Username</div>
+                  <div id="dropdownEmail">user@email.com</div>
+                </div>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <button id="signOutBtn" class="logout-button">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign out</span>
+              </button>
+            </div>
+          </div>
         </div>
       </header>
       <section class="hero">
@@ -1766,6 +1923,60 @@
         selectedPurchaseItemId = null;
       }
 
+      const profileTrigger = document.getElementById("profileTrigger");
+
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      const profileWrapper = document.getElementById("profileWrapper");
+
+      function toggleProfileDropdown(force) {
+        const isOpen = force ?? !profileDropdown.classList.contains("show");
+
+        profileDropdown.classList.toggle("show", isOpen);
+        profileTrigger.setAttribute("aria-expanded", String(isOpen));
+      }
+
+      profileTrigger.addEventListener("click", () => {
+        toggleProfileDropdown();
+      });
+
+      // Click outside
+      document.addEventListener("click", (event) => {
+        if (!profileWrapper.contains(event.target)) {
+          toggleProfileDropdown(false);
+        }
+      });
+
+      // Escape key
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          toggleProfileDropdown(false);
+          profileTrigger.focus();
+        }
+      });
+
+      function updateUserProfile(user) {
+        const displayName =
+          user.displayName || user.email?.split("@")[0] || "User";
+
+        const email = user.email || "";
+
+        const initials = displayName
+          .trim()
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((word) => word.charAt(0).toUpperCase())
+          .join("");
+
+        document.getElementById("userAvatar").textContent = initials || "U";
+
+        document.getElementById("dropdownAvatar").textContent = initials || "U";
+
+        document.getElementById("dropdownUsername").textContent = displayName;
+
+        document.getElementById("dropdownEmail").textContent = email;
+      }
+
       document
         .getElementById("purchaseForm")
         .addEventListener("submit", function (event) {
@@ -1869,6 +2080,18 @@
         };
         onAuthStateChanged(auth, (user) => {
           if (user) {
+            // Get username from Firebase Authentication
+            // const usernameElement = document.getElementById("currentUserName");
+
+            // const username =
+            //   user.displayName || user.email?.split("@")[0] || "User";
+
+            // usernameElement.textContent = `👤 ${username}`;
+            // usernameElement.style.display = "block";
+
+            updateUserProfile(user);
+            document.getElementById("profileWrapper").style.display = "block";
+
             // มี Session: โหลดข้อมูลก่อนแสดง Dashboard
             setSyncStatus("● กำลังโหลดข้อมูลจาก Firestore...");
             loadUserData(user);
@@ -1876,6 +2099,8 @@
             // ไม่มี Session: แสดงหน้า Login
             currentUser = null;
             cloudReady = false;
+            // Hide username
+            // document.getElementById("currentUserName").style.display = "none";
             data = {
               items: [],
             };
@@ -1883,6 +2108,9 @@
 
             render();
             document.getElementById("signOutBtn").style.display = "none";
+            document.getElementById("profileWrapper").style.display = "none";
+
+            toggleProfileDropdown(false);
 
             document.getElementById("authBackdrop").classList.add("open");
 
