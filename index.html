@@ -1510,7 +1510,7 @@
               const iv = intervals(i),
                 avg = mean(iv),
                 last = sortedLogs(i).at(-1)?.date;
-              return `<div class="item" data-id="${i.id}"><div class="item-icon">${i.icon}</div><div class="item-main"><div class="item-name">${esc(i.name)}</div><div class="item-meta">${esc(i.category)} · ซื้อครั้งล่าสุด ${last ? fmtDate(last) : "—"}</div></div><div class="item-side"><div class="avg">${avg == null ? "เริ่มต้น" : nfmt(avg)} <small>${avg == null ? "" : "วัน/รอบ"}</small></div><div class="trend">${iv.length ? iv.length + " ช่วงที่วัดได้" : "ต้องมีอย่างน้อย 2 ครั้ง"}</div></div><span class="chev">›</span></div>`;
+              return `<div class="item" data-id="${esc(i.id)}"><div class="item-icon">${safeIcon(i.icon)}</div><div class="item-main"><div class="item-name">${esc(i.name)}</div><div class="item-meta">${esc(i.category)} · ซื้อครั้งล่าสุด ${last ? fmtDate(last) : "—"}</div></div><div class="item-side"><div class="avg">${avg == null ? "เริ่มต้น" : nfmt(avg)} <small>${avg == null ? "" : "วัน/รอบ"}</small></div><div class="trend">${iv.length ? iv.length + " ช่วงที่วัดได้" : "ต้องมีอย่างน้อย 2 ครั้ง"}</div></div><span class="chev">›</span></div>`;
             })
             .join("");
         list
@@ -1525,7 +1525,7 @@
           ? logs
               .map(
                 (l) =>
-                  `<div class="log-row"><div class="log-left"><div class="dot"></div><div><div class="log-date">${fmtDate(l.date)}</div><div class="log-item">${l.icon} ${esc(l.itemName)}</div></div></div><div class="log-right">ซื้อแล้ว</div></div>`,
+                  `<div class="log-row"><div class="log-left"><div class="dot"></div><div><div class="log-date">${fmtDate(l.date)}</div><div class="log-item">${safeIcon(l.icon)} ${esc(l.itemName)}</div></div></div><div class="log-right">ซื้อแล้ว</div></div>`,
               )
               .join("")
           : '<div class="empty">ยังไม่มีประวัติการซื้อ</div>';
@@ -1543,6 +1543,11 @@
             })[c],
         );
       }
+      function safeIcon(icon) {
+        const allowedIcons = ["🧴", "☕", "🛒", "🧻", "🧼", "💊", "🐾", "📦"];
+
+        return allowedIcons.includes(icon) ? icon : "📦";
+      }
       let activeId = null;
       function showDetail(id) {
         const item = data.items.find((i) => i.id === id);
@@ -1554,7 +1559,7 @@
           med = median(iv),
           sd = std(iv);
         document.getElementById("detailPanel").classList.add("show");
-        document.getElementById("detailIcon").textContent = item.icon;
+        document.getElementById("detailIcon").textContent = safeIcon(item.icon);
         document.getElementById("detailName").textContent = item.name;
         document.getElementById("detailSubtitle").textContent =
           item.category + " · บันทึก " + logs.length + " ครั้ง";
@@ -1583,7 +1588,7 @@
             .reverse()
             .map(
               (l) =>
-                `<div class="log-row"><div class="log-left"><div class="dot"></div><div class="log-date">${fmtDate(l.date)}</div></div><div class="log-right"><button class="ghost delete-log" data-log="${l.id}">ลบ</button></div></div>`,
+                `<div class="log-row"><div class="log-left"><div class="dot"></div><div class="log-date">${fmtDate(l.date)}</div></div><div class="log-right"><button class="ghost delete-log" data-log="${esc(l.id)}">ลบ</button></div></div>`,
             )
             .join("") +
           `<div style="padding-top:12px"><button class="primary" id="addPurchase">＋ บันทึกการซื้อ</button> <button class="ghost delete" id="deleteItem">ลบไอเท็มนี้</button></div>`;
